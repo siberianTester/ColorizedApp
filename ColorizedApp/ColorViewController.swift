@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class ViewController: UIViewController {
+final class ColorViewController: UIViewController {
 
     @IBOutlet var colorView: UIView!
     
@@ -19,11 +19,16 @@ final class ViewController: UIViewController {
     @IBOutlet var greenSlider: UISlider!
     @IBOutlet var blueSlider: UISlider!
     
+    var color: UIColor!
+    
+    weak var delegate: ColorViewControllerDelegate?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupColorView()
+        setSliderValue()
     }
-
+    
     @IBAction func sliderAction(_ sender: UISlider) {
         viewSetColor()
         
@@ -37,9 +42,32 @@ final class ViewController: UIViewController {
         }
     }
     
+    @IBAction func saveColorAction() {
+        delegate?.setColor(colorView)
+        dismiss(animated: true)
+    }
+    
+    private func setSliderValue() {
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        
+        color.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        
+        redSlider.value = Float(red)
+        greenSlider.value = Float(green)
+        blueSlider.value = Float(blue)
+        
+        redValueLabel.text = string(from: redSlider)
+        greenValueLabel.text = string(from: greenSlider)
+        blueValueLabel.text = string(from: blueSlider)
+    }
+    
     private func setupColorView() {
         colorView.layer.borderWidth = 1
         colorView.layer.cornerRadius = 10
+        colorView.backgroundColor = color
     }
     
     private func viewSetColor() {
